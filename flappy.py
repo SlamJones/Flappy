@@ -12,11 +12,16 @@ settings = {
     "frame_rate": 30,
     "bird_radius": 8,
     "fall_rate": 5,
+    "fall_rate_default": 5,
     "rise_rate": 20,
+    "rise_rate_default": 20,
     "forward_rate": 5,
+    "forward_rate_default": 5,
     "forward_rate_max": 15,
+    "column_spacing": 450,
     "column_spacing_min": 150,
     "column_spacing_max": 450,
+    "column_gap": 800,
     "column_gap_min": 160,
     "column_gap_max": 800,
     "gap_center_min": 320,
@@ -526,7 +531,7 @@ def play_game(win,score):
     traveled = 0
     traveled_since_column = 0
     
-    distance_to_next = settings["column_spacing_max"]
+    distance_to_next = settings["column_spacing"]
     
     points_since_color_shift = 0
     
@@ -598,6 +603,7 @@ def play_game(win,score):
                 if gap_top > bird_top or gap_bottom < bird_bottom:
                     play = False
                     show_info_box(win,"You crashed! Try again.")
+                    reset_settings()
     ##### END PLAY LOOP #####
     #####
             
@@ -638,6 +644,13 @@ def new_column(win,traveled):
     
     return(column)
 
+
+def reset_settings():
+    settings["column_spacing"] = settings["column_spacing_max"]
+    settings["forward_rate"] = settings["forward_rate_default"]
+    settings["fall_rate"] = settings["fall_rate_default"]
+    settings["rise_rate"] = settings["rise_rate_default"]
+
         
 def next_color(win):
     new_settings = random.choice(levels)
@@ -648,7 +661,8 @@ def next_color(win):
         settings["forward_rate"] += 1
         settings["rise_rate"] += 1
         settings["fall_rate"] += 1
-        settings["column_spacing_max"] -= 2
+    if settings["column_spacing"] > settings["column_spacing_min"]:
+        settings["column_spacing"] -= 2
     if settings["column_gap_max"] > settings["column_gap_min"]:
         settings["column_gap_max"] -= 2
         
